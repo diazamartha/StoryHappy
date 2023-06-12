@@ -3,12 +3,14 @@ package com.example.storyhappy.presentation.main
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.storyhappy.R
 import com.example.storyhappy.data.Result
+import com.example.storyhappy.data.source.remote.response.ListStoryItem
 import com.example.storyhappy.databinding.ActivityMainBinding
 import com.example.storyhappy.domain.model.StoryItem
 import com.example.storyhappy.presentation.detail.DetailActivity
@@ -30,14 +32,16 @@ class MainActivity : AppCompatActivity() {
 
         storiesAdapter = StoriesAdapter()
 
-        showStories()
+        //showStories()
         setupRecyclerView()
         navigateToUploadActivity()
         checkLoginStatus()
         logout()
 
+        getData()
+
         storiesAdapter.setOnItemClickCallback(object : StoriesAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: StoryItem) {
+            override fun onItemClicked(data: ListStoryItem) {
                 Intent(this@MainActivity, DetailActivity::class.java).also {
                     it.putExtra(DetailActivity.STORY_ID, data.id)
                     startActivity(it)
@@ -46,25 +50,25 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun showStories() {
-        mainViewModel.getToken().observe(this) { token ->
-            mainViewModel.getStories(token).observe(this) { storyState ->
-                when (storyState) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        storiesAdapter.setStories(storyState.data)
-                    }
-
-                    is Result.Error -> {
-                        Toast.makeText(this@MainActivity, getString(R.string.error_can_not_load_data), Toast.LENGTH_SHORT).show()
-                    }
-
-                    else -> {}
+    private fun getData() {
+        val adapter = StoriesAdapter()
+        adapter.setOnItemClickCallback(object : StoriesAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: ListStoryItem) {
+                Intent(this@MainActivity, DetailActivity::class.java).also {
+                    it.putExtra(DetailActivity.STORY_ID, data.id)
+                    startActivity(it)
                 }
+            }
+        })
+        binding.rvStories.adapter = adapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                adapter.retry()
+            }
+        )
+        mainViewModel.getToken().observe(this) { token ->
+            mainViewModel.getStories(token).observe(this) {
+                Log.d("MainActivity", "Received pagingData: $it")
+                adapter.submitData(lifecycle, it)
             }
         }
     }

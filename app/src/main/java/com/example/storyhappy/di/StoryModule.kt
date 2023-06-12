@@ -7,6 +7,6 @@ import com.example.storyhappy.domain.usecase.StoryUseCase
 import org.koin.dsl.module
 
 val storyModule = module {
-    single<StoryRepository> { StoryRepositoryImpl(get()) }
+    single<StoryRepository> { StoryRepositoryImpl(get(), get()) }
     single<StoryUseCase> { StoryInteractor(get()) }
 }

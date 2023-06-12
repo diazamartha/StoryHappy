@@ -1,20 +1,30 @@
 package com.example.storyhappy.data.repository
 
+import androidx.lifecycle.LiveData
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
+import androidx.paging.map
 import com.example.storyhappy.data.Result
-import com.example.storyhappy.data.source.local.UserPreferenceImpl
+import com.example.storyhappy.data.StoryRemoteMediator
+import com.example.storyhappy.data.source.local.StoryDatabase
+import com.example.storyhappy.data.source.local.dao.RemoteKeysDao
+import com.example.storyhappy.data.source.local.dao.StoryDao
+import com.example.storyhappy.data.source.local.entity.mapToStoryItemDomain
 import com.example.storyhappy.data.source.remote.StoryService
 import com.example.storyhappy.data.source.remote.response.AddStoryResponse
+import com.example.storyhappy.data.source.remote.response.ListStoryItem
 import com.example.storyhappy.data.source.remote.response.StoryDetailResponse
-import com.example.storyhappy.data.source.remote.response.StoryResponse
 import com.example.storyhappy.domain.interfaces.StoryRepository
-import com.example.storyhappy.domain.interfaces.UserPreferenceRepository
 import com.example.storyhappy.domain.model.StoryDetail
 import com.example.storyhappy.domain.model.StoryItem
 import com.example.storyhappy.domain.model.toStoryDetail
-import com.example.storyhappy.domain.model.toStoryItem
 import com.example.storyhappy.utils.reduceFileImage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -22,22 +32,21 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 class StoryRepositoryImpl(
-    private val storyService: StoryService
+    private val storyService: StoryService,
+    private val storyDatabase: StoryDatabase
 ) : StoryRepository {
 
-    override fun getStories(token: String): Flow<Result<List<StoryItem>>> = flow {
-        emit(Result.Loading)
-        val response: StoryResponse = storyService.getStories(
-            token,
-            1,
-            100
-        )
-        if (!response.error) {
-            val storyItems: List<StoryItem> = response.listStory.toStoryItem()
-            emit(Result.Success(storyItems))
-        } else {
-            emit(Result.Error(response.message))
-        }
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getStories(token: String): LiveData<PagingData<ListStoryItem>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 5
+            ),
+            remoteMediator = StoryRemoteMediator(token, storyDatabase, storyService),
+            pagingSourceFactory = {
+                storyDatabase.storyDao().getStories()
+            }
+        ).liveData
     }
 
     override fun getStoryDetail(id: String): Flow<Result<StoryDetail>> = flow {

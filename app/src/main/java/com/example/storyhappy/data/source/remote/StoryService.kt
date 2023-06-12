@@ -17,8 +17,8 @@ interface StoryService {
     @GET("stories")
     suspend fun getStories(
         @Header("Authorization") token: String,
-        @Query("page") page: Int,
-        @Query("size") size: Int
+        @Query("page") page: Int? = null,
+        @Query("size") size: Int? = null
     ): StoryResponse
 
     @GET("stories/{id}")
