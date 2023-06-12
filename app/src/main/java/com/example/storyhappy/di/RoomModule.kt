@@ -6,7 +6,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val roomModule = module {
-    single<StoryDatabase> {
+    single {
         Room.databaseBuilder(androidContext(), StoryDatabase::class.java, "story_database")
             .allowMainThreadQueries()
             .fallbackToDestructiveMigration()

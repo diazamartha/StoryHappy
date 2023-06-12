@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
+import com.example.storyhappy.R
 
 class EmailEditText : AppCompatEditText {
 
@@ -33,10 +34,10 @@ class EmailEditText : AppCompatEditText {
     internal fun validateEmail(email: String) {
         val emailPattern = android.util.Patterns.EMAIL_ADDRESS
         val isValid = emailPattern.matcher(email).matches()
-        if (!isValid) {
-            setError("Please enter a valid email")
-        } else {
-            error = null
+        error = if (!isValid) ({
+            R.string.error_email_invalid
+        }).toString() else {
+            null
         }
     }
 }

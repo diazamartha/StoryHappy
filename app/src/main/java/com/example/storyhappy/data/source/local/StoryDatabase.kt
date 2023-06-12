@@ -5,13 +5,11 @@ import androidx.room.RoomDatabase
 import com.example.storyhappy.data.source.local.dao.RemoteKeysDao
 import com.example.storyhappy.data.source.local.dao.StoryDao
 import com.example.storyhappy.data.source.local.entity.RemoteKeysEntity
-import com.example.storyhappy.data.source.local.entity.StoryItemEntity
 import com.example.storyhappy.data.source.remote.response.ListStoryItem
-import javax.xml.validation.Schema
 
 @Database(
     entities = [ListStoryItem::class, RemoteKeysEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 

@@ -9,14 +9,13 @@ import com.example.storyhappy.data.source.local.StoryDatabase
 import com.example.storyhappy.data.source.local.entity.RemoteKeysEntity
 import com.example.storyhappy.data.source.remote.StoryService
 import com.example.storyhappy.data.source.remote.response.ListStoryItem
-import com.example.storyhappy.domain.model.mapToStoryItemEntityDomain
 
 @OptIn(ExperimentalPagingApi::class)
 class StoryRemoteMediator(
     private val token: String,
     private val storyDatabase: StoryDatabase,
     private val storyService: StoryService
-) : RemoteMediator<Int, ListStoryItem>(){
+) : RemoteMediator<Int, ListStoryItem>() {
 
     override suspend fun initialize(): InitializeAction {
         return InitializeAction.LAUNCH_INITIAL_REFRESH
@@ -31,12 +30,14 @@ class StoryRemoteMediator(
                 val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
                 remoteKeys?.nextKey?.minus(1) ?: INITIAL_PAGE_INDEX
             }
+
             LoadType.PREPEND -> {
                 val remoteKeys = getRemoteKeyForFirstItem(state)
                 val prevKey = remoteKeys?.prevKey
                     ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
                 prevKey
             }
+
             LoadType.APPEND -> {
                 val remoteKeys = getRemoteKeyForLastItem(state)
                 val nextKey = remoteKeys?.nextKey
@@ -57,7 +58,6 @@ class StoryRemoteMediator(
                     storyDatabase.storyDao().deleteAll()
                     storyDatabase.remoteKeysDao().deleteRemoteKeys()
                 }
-
                 storyDatabase.storyDao()
                     .insertStory(responseData.listStory.map {
                         ListStoryItem(
@@ -66,6 +66,8 @@ class StoryRemoteMediator(
                             description = it.description,
                             photoUrl = it.photoUrl,
                             createdAt = it.createdAt,
+                            lat = it.lat,
+                            lon = it.lon
                         )
                     })
                 val prevKey = if (page == 1) null else page - 1
@@ -73,9 +75,7 @@ class StoryRemoteMediator(
                 val keys = responseData.listStory.map {
                     RemoteKeysEntity(id = it.id, prevKey = prevKey, nextKey = nextKey)
                 }
-
                 storyDatabase.remoteKeysDao().insertAll(keys)
-                //storyDatabase.storyDao().insertStory(responseData.listStory)
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (e: Exception) {
@@ -107,6 +107,4 @@ class StoryRemoteMediator(
     private companion object {
         const val INITIAL_PAGE_INDEX = 1
     }
-
-
 }

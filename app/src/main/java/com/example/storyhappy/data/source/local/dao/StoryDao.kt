@@ -5,9 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.storyhappy.data.source.local.entity.StoryItemEntity
 import com.example.storyhappy.data.source.remote.response.ListStoryItem
-import com.example.storyhappy.domain.model.StoryItem
 
 @Dao
 interface StoryDao {

@@ -1,30 +1,26 @@
 package com.example.storyhappy.data.repository
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.liveData
-import androidx.paging.map
 import com.example.storyhappy.data.Result
 import com.example.storyhappy.data.StoryRemoteMediator
 import com.example.storyhappy.data.source.local.StoryDatabase
-import com.example.storyhappy.data.source.local.dao.RemoteKeysDao
-import com.example.storyhappy.data.source.local.dao.StoryDao
-import com.example.storyhappy.data.source.local.entity.mapToStoryItemDomain
 import com.example.storyhappy.data.source.remote.StoryService
 import com.example.storyhappy.data.source.remote.response.AddStoryResponse
 import com.example.storyhappy.data.source.remote.response.ListStoryItem
 import com.example.storyhappy.data.source.remote.response.StoryDetailResponse
+import com.example.storyhappy.data.source.remote.response.StoryResponse
 import com.example.storyhappy.domain.interfaces.StoryRepository
 import com.example.storyhappy.domain.model.StoryDetail
-import com.example.storyhappy.domain.model.StoryItem
 import com.example.storyhappy.domain.model.toStoryDetail
 import com.example.storyhappy.utils.reduceFileImage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -70,13 +66,26 @@ class StoryRepositoryImpl(
     ): Flow<Result<AddStoryResponse>> = flow {
         emit(Result.Loading)
         try {
-            val compressedFile = reduceFileImage(photo, 1_000_000)
+            val compressedFile = reduceFileImage(photo)
             val descriptionRequestBody = description.toRequestBody("text/plain".toMediaTypeOrNull())
             val imageRequestBody = compressedFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
             val multipart =
                 MultipartBody.Part.createFormData("photo", compressedFile.name, imageRequestBody)
             val response =
                 storyService.uploadStory("bearer $token", multipart, descriptionRequestBody)
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            emit(Result.Error(e.message.toString()))
+        }
+    }
+
+    override fun getStoriesWithLocation(token: String): LiveData<Result<StoryResponse>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = storyService.getStoriesWithLocation(
+                "bearer $token",
+                1
+            )
             emit(Result.Success(response))
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))

@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import com.example.storyhappy.R
 import com.example.storyhappy.presentation.welcome.WelcomeActivity
 
@@ -15,7 +16,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             navigateToWelcomeActivity()
             finish()
         }, SPLASH_DELAY)

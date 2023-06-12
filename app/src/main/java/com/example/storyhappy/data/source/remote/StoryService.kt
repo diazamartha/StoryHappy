@@ -35,4 +35,10 @@ interface StoryService {
         @Part("description") description: RequestBody,
     ): AddStoryResponse
 
+    @GET("stories")
+    suspend fun getStoriesWithLocation(
+        @Header("Authorization") authorization: String,
+        @Query("location") location: Int = 1
+    ): StoryResponse
+
 }
