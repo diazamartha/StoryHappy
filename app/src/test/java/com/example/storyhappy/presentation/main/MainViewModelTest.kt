@@ -37,11 +37,9 @@ class MainViewModelTest {
 
     @Mock
     private lateinit var authUseCase: AuthUseCase
-
     @Mock
     private lateinit var storyUseCase: StoryUseCase
 
-    @Mock
     private lateinit var mainViewModel: MainViewModel
 
     @Before
@@ -50,7 +48,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun `when Successfully Fetch Data From API and Return It`() = runTest {
+    fun `when Get Stories Should Not Null and Return Data`() = runTest {
         val dummyToken = "777"
         val dummyStories = DataDummy.generateDummyStoryResponse()
         val dataSource: PagingData<ListStoryItem> = StoryPagingSource.snapshot(dummyStories)
@@ -74,7 +72,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun `when Failed Fetch Data From API and Not Return It`() = runTest {
+    fun `when Get Stories Empty Should Return No Data`() = runTest {
         val dummyToken = "777"
         val dataSource: PagingData<ListStoryItem> = PagingData.from(emptyList())
         val expectedStories = MutableLiveData<PagingData<ListStoryItem>>()
