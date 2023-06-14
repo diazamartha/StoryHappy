@@ -40,5 +40,4 @@ interface StoryService {
         @Header("Authorization") authorization: String,
         @Query("location") location: Int = 1
     ): StoryResponse
-
 }

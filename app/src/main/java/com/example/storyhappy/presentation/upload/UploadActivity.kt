@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -61,6 +62,13 @@ class UploadActivity : AppCompatActivity() {
         }
 
         setClickListeners()
+
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateToMainActivity()
+                finish()
+            }
+        })
     }
 
     private fun requestPermissions() {
@@ -194,10 +202,10 @@ class UploadActivity : AppCompatActivity() {
         Toast.makeText(this@UploadActivity, message, Toast.LENGTH_SHORT).show()
     }
 
-    @Deprecated("Deprecated in Java")
+    /*@Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         navigateToMainActivity()
-    }
+    }*/
 
     override fun onDestroy() {
         super.onDestroy()

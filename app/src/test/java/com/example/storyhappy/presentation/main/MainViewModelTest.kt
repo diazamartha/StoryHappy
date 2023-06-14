@@ -43,7 +43,7 @@ class MainViewModelTest {
     private lateinit var mainViewModel: MainViewModel
 
     @Before
-    fun setup() {
+    fun prepareTest() {
         mainViewModel = MainViewModel(authUseCase, storyUseCase)
     }
 

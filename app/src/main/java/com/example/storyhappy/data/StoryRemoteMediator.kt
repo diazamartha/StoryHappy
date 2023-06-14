@@ -101,7 +101,6 @@ class StoryRemoteMediator(
                 storyDatabase.remoteKeysDao().getRemoteKeysId(id)
             }
         }
-
     }
 
     private companion object {

@@ -34,9 +34,9 @@ class EmailEditText : AppCompatEditText {
     internal fun validateEmail(email: String) {
         val emailPattern = android.util.Patterns.EMAIL_ADDRESS
         val isValid = emailPattern.matcher(email).matches()
-        error = if (!isValid) ({
-            R.string.error_email_invalid
-        }).toString() else {
+        error = if (!isValid) {
+            context.getString(R.string.error_email_invalid)
+        } else {
             null
         }
     }

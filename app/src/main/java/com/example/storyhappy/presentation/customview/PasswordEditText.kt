@@ -32,9 +32,9 @@ class PasswordEditText : TextInputEditText {
     }
 
     internal fun validatePasswordLength(password: String) {
-        error = if (password.length < 8) ({
-            R.string.error_password_invalid
-        }).toString() else {
+        error = if (password.length < 8) {
+            context.getString(R.string.error_password_invalid)
+        } else {
             null
         }
     }

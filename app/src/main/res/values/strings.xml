@@ -14,6 +14,7 @@
     <string name="label_take_your_image">Take your image</string>
     <string name="label_uploading">Uploading…</string>
     <string name="label_storyhappy_logo">StoryHappy Logo</string>
+    <string name="label_preview_image">Preview Image</string>
 
     <string name="action_login">LOGIN</string>
     <string name="action_register">REGISTER</string>

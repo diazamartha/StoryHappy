@@ -1,10 +1,12 @@
 package com.example.storyhappy.presentation.maps
 
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.storyhappy.R
@@ -42,6 +44,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateToMainActivity()
+                finish()
+            }
+        })
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -67,7 +76,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                                 lon = it.lon
                             )
                         }
-                        showStoryWithLocation(storyList)
+                        displayStoryLocations(storyList)
                         showLoading(false)
                     }
 
@@ -82,38 +91,43 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     else -> {}
                 }
-
             }
         }
     }
 
-    private fun showStoryWithLocation(response: List<ListStoryItem>) {
-
+    private fun displayStoryLocations(storyList: List<ListStoryItem>) {
         val indonesiaLatLng = LatLng(-0.7893, 113.9213)
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(indonesiaLatLng, 2f))
+        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(indonesiaLatLng, 2f)
+        mMap.animateCamera(cameraUpdate)
 
         lifecycleScope.launch {
-            for ((index, story) in response.reversed().withIndex()) {
+            for ((index, story) in storyList.reversed().withIndex()) {
                 val latLng = LatLng(story.lat, story.lon)
-                val bitmap = withContext(Dispatchers.IO) {
-                    Glide.with(this@MapsActivity)
-                        .asBitmap()
-                        .load(story.photoUrl)
-                        .override(64, 64)
-                        .circleCrop()
-                        .submit()
-                        .get()
-                }
-                val bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap)
-
-                mMap.addMarker(
-                    MarkerOptions()
-                        .position(latLng)
-                        .title(story.name)
-                        .icon(bitmapDescriptor)
-                        .zIndex(index.toFloat())
-                )
+                val markerOptions = createMarkerOptions(story, latLng)
+                mMap.addMarker(markerOptions)?.zIndex = index.toFloat()
             }
+        }
+    }
+
+    private suspend fun createMarkerOptions(story: ListStoryItem, latLng: LatLng): MarkerOptions {
+        val bitmap = fetchStoryImage(story.photoUrl)
+        val bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap)
+
+        return MarkerOptions()
+            .position(latLng)
+            .title(story.name)
+            .icon(bitmapDescriptor)
+    }
+
+    private suspend fun fetchStoryImage(photoUrl: String): Bitmap {
+        return withContext(Dispatchers.IO) {
+            Glide.with(this@MapsActivity)
+                .asBitmap()
+                .load(photoUrl)
+                .override(64, 64)
+                .circleCrop()
+                .submit()
+                .get()
         }
     }
 
@@ -123,10 +137,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         finish()
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        navigateToMainActivity()
-    }
 
     private fun showToast(message: String) {
         Toast.makeText(this@MapsActivity, message, Toast.LENGTH_SHORT).show()
