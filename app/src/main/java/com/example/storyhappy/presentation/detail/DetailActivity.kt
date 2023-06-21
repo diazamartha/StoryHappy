@@ -7,12 +7,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.storyhappy.R
 import com.example.storyhappy.data.Result
-import com.example.storyhappy.data.source.remote.response.Story
-import com.example.storyhappy.data.source.remote.response.StoryDetailResponse
 import com.example.storyhappy.databinding.ActivityDetailBinding
-import com.example.storyhappy.domain.model.StoryDetail
-import com.example.storyhappy.domain.model.StoryItem
-import com.example.storyhappy.presentation.main.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailActivity : AppCompatActivity() {
@@ -21,10 +16,6 @@ class DetailActivity : AppCompatActivity() {
     private val binding get() = _binding!!
 
     private val detailViewModel: DetailViewModel by viewModel()
-
-    companion object {
-        const val STORY_ID = "story_id"
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,8 +49,7 @@ class DetailActivity : AppCompatActivity() {
                     }
 
                     is Result.Error -> {
-                        Toast.makeText(this@DetailActivity, getString(R.string.error_can_not_load_data), Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(this@DetailActivity, getString(R.string.error_can_not_load_data), Toast.LENGTH_SHORT).show()
                     }
 
                     else -> {}
@@ -71,5 +61,9 @@ class DetailActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    companion object {
+        const val STORY_ID = "story_id"
     }
 }

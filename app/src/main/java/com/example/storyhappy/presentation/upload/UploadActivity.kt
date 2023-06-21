@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -32,11 +33,6 @@ class UploadActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModel()
     private var photoFile: File? = null
     private lateinit var currentPhotoPath: String
-
-    companion object {
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-        private const val REQUEST_CODE_PERMISSIONS = 10
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -66,6 +62,13 @@ class UploadActivity : AppCompatActivity() {
         }
 
         setClickListeners()
+
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateToMainActivity()
+                finish()
+            }
+        })
     }
 
     private fun requestPermissions() {
@@ -199,13 +202,18 @@ class UploadActivity : AppCompatActivity() {
         Toast.makeText(this@UploadActivity, message, Toast.LENGTH_SHORT).show()
     }
 
-    @Deprecated("Deprecated in Java")
+    /*@Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         navigateToMainActivity()
-    }
+    }*/
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    companion object {
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+        private const val REQUEST_CODE_PERMISSIONS = 10
     }
 }

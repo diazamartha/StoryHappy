@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-    <com.google.android.material.imageview.ShapeableImageView
+    <ImageView
         android:id="@+id/previewImageView"
         android:layout_width="330dp"
         android:layout_height="320dp"
@@ -27,7 +27,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/RoundedSquare"
-        tools:srcCompat="@drawable/ic_image" />
+        tools:srcCompat="@drawable/ic_image"
+        android:contentDescription="@string/label_preview_image" />
 
     <Button
         android:id="@+id/cameraButton"
@@ -59,7 +60,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/descriptionStory"
-        android:layout_width="0dp"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
         android:hint="@string/label_description_hint"
         android:layout_marginTop="12dp"
@@ -70,7 +71,7 @@
         app:boxCornerRadiusTopStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guidelineHorizontal">
+        app:layout_constraintTop_toBottomOf="@+id/cameraButton">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/addDescriptionStory"

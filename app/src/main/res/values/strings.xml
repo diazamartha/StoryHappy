@@ -13,6 +13,8 @@
     <string name="label_description_hint">description</string>
     <string name="label_take_your_image">Take your image</string>
     <string name="label_uploading">Uploading…</string>
+    <string name="label_storyhappy_logo">StoryHappy Logo</string>
+    <string name="label_preview_image">Preview Image</string>
 
     <string name="action_login">LOGIN</string>
     <string name="action_register">REGISTER</string>
@@ -21,6 +23,8 @@
     <string name="action_gallery">GALLERY</string>
     <string name="action_upload">Upload</string>
     <string name="action_choose_picture">Choose a picture</string>
+    <string name="action_fab_upload_activity">Upload Story</string>
+    <string name="action_btn_maps">Move to Maps Activity</string>
 
     <string name="hint_name">Nama</string>
     <string name="hint_email">Email</string>
@@ -32,4 +36,9 @@
     <string name="error_no_image">No image, take image to upload</string>
     <string name="error_no_description">No description, write one to upload</string>
     <string name="error_can_not_load_data">Can not load data</string>
+    <string name="error_email_invalid">Please enter a valid email</string>
+    <string name="error_password_invalid">Password must be at least 8 characters long</string>
+    <string name="retry">Coba lagi</string>
+    <string name="title_activity_maps">MapsActivity</string>
+
 </resources>

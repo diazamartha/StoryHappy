@@ -3,6 +3,7 @@ package com.example.storyhappy
 import android.app.Application
 import com.example.storyhappy.di.apiModule
 import com.example.storyhappy.di.authModule
+import com.example.storyhappy.di.roomModule
 import com.example.storyhappy.di.storyModule
 import com.example.storyhappy.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
@@ -21,7 +22,8 @@ class StoryHappyApp : Application() {
                     apiModule,
                     authModule,
                     storyModule,
-                    viewModelModule
+                    viewModelModule,
+                    roomModule
                 )
             )
         }

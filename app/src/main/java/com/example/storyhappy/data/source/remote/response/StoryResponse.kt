@@ -1,5 +1,7 @@
 package com.example.storyhappy.data.source.remote.response
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 data class StoryResponse(
@@ -14,6 +16,7 @@ data class StoryResponse(
     val message: String
 )
 
+@Entity(tableName = "story")
 data class ListStoryItem(
 
     @field:SerializedName("photoUrl")
@@ -28,12 +31,14 @@ data class ListStoryItem(
     @field:SerializedName("description")
     val description: String,
 
-    @field:SerializedName("lon")
-    val lon: Any,
-
+    @PrimaryKey
     @field:SerializedName("id")
     val id: String,
 
+    @field:SerializedName("lon")
+    val lon: Double,
+
     @field:SerializedName("lat")
-    val lat: Any
+    val lat: Double
+
 )

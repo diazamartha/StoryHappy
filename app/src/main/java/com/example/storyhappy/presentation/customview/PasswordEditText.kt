@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
+import com.example.storyhappy.R
 import com.google.android.material.textfield.TextInputEditText
 
 class PasswordEditText : TextInputEditText {
@@ -31,10 +32,10 @@ class PasswordEditText : TextInputEditText {
     }
 
     internal fun validatePasswordLength(password: String) {
-        if (password.length < 8) {
-            setError("Password must be at least 8 characters long")
+        error = if (password.length < 8) {
+            context.getString(R.string.error_password_invalid)
         } else {
-            error = null
+            null
         }
     }
 }
